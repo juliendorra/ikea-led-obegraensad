@@ -1,0 +1,76 @@
+html {
+    color: #fff;
+    height: 100%;
+    background-color: #000
+}
+
+* {
+    box-sizing: border-box
+}
+
+a:link,
+a:visited {
+    color: #f24
+}
+
+html,
+*,
+input {
+    font-family: monospace;
+    font-size: 14px
+}
+
+body {
+    height: 100%;
+    place-items: center;
+    margin: 0;
+    padding: 0;
+    display: grid
+}
+
+label,
+input,
+#output {
+    display: block
+}
+
+#editor {
+    width: 271px;
+    line-height: 1.15em;
+    display: block
+}
+
+#editor #input {
+    color: #fff;
+    width: 100%;
+    background: 0 0;
+    border: 0;
+    margin: .15em 0;
+    padding: 0
+}
+
+#editor #input:focus {
+    outline: none
+}
+
+#editor label.limit-warning {
+    display: none
+}
+
+#editor #comment {
+    color: #f24
+}
+
+#editor.over-limit #input {
+    color: #fff;
+    background: #f24
+}
+
+#editor.over-limit.focus label.limit-warning {
+    display: block
+}
+
+#editor.over-limit.focus label.second,
+#code-runner {
+    display: none
+}

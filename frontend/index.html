@@ -1,22 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#9b8d82" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
-      integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <title>OBEGRÄNSAD Control</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="app"></div>
+<!doctype html>
+<html>
 
-    <script src="/src/index.tsx" type="module"></script>
-  </body>
+<head>
+  <meta name="viewport" content="width=400, user-scalable=no" />
+  <meta name="theme-color" content="#000000" />
+  <title>(t,i,x,y) => "creative code golfing"</title>
+  <meta name="description" content="A minimalist coding environment. Control 16x16 points with a single JavaScript function.">
+  <link rel="stylesheet" href="/src/index.css" />
+
+</head>
+
+<body>
+  <canvas id="output"></canvas>
+
+  <form id="editor">
+    <div id="comment">
+      <label class="first" for="input">// tixy - creative code golfing</label>
+      <label class="second" for="input">// click the dots for more info</label>
+      <label class="limit-warning" for="input">// use 32 characters or less</label>
+    </div>
+
+    <label id="label" for="input">(t,i,x,y) =></label>
+    <input name="code" id="input" type="text" value="Math.sin(y/8+t)" autocomplete="off" autocapitalize="off" spellcheck="false" autocorrect="off" enterkeyhint="go" />
+  </form>
+
+  <script type="module" src="/src/index.js"></script>
+</body>
+
 </html>
