@@ -12,6 +12,7 @@ private:
   Screen_() = default;
   int findPosition(uint8_t count);
   void rotate();
+  void _render();
   unsigned int brightness = 255;
   uint8_t renderBuffer_[ROWS * COLS];
   uint8_t rotatedRenderBuffer_[ROWS * COLS];
@@ -34,6 +35,8 @@ private:
       0xe7, 0xe6, 0xe5, 0xe4, 0xe3, 0xe2, 0xe1, 0xe0, 0xf0, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7,
       0xef, 0xee, 0xed, 0xec, 0xeb, 0xea, 0xe9, 0xe8, 0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd, 0xfe, 0xff};
 
+  static void onScreenTimer();
+  
 public:
   static Screen_ &getInstance();
 
@@ -46,13 +49,14 @@ public:
   unsigned int getCurrentBrightness() const;
   void setBrightness(unsigned int brightness);
 
-  void setRenderBuffer(const uint8_t *renderBuffer);
+  void setRenderBuffer(const uint8_t *renderBuffer, bool grays=false);
   uint8_t *getRenderBuffer();
   uint8_t *getRotatedRenderBuffer();
 
   void clear(bool rerender = true);
   void drawLine(uint8_t line, bool isHorizontal);
   void setPixel(uint8_t x, uint8_t y, uint8_t value);
+  void setup();
   void setPixelAtIndex(uint8_t index, uint8_t value);
   void render();
   void loadFromStorage();
