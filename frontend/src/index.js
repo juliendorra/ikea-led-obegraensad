@@ -24,21 +24,35 @@ output.style.width = `${width}px`;
 output.style.height = `${width * ratio}px`;
 
 ////////// Connect to the IKEA OBEGRÄNSAD Hack/Mod ESP32 web socket /////////
+
 let wsUrl = `ws://${window.location.host}/ws`;
+const reconnectDelay = 3000; // Reconnect delay in milliseconds
+let ws;
 
-let ws = new WebSocket(wsUrl);
+function setupWebSocket() {
+  ws = new WebSocket(wsUrl);
 
-ws.onopen = () => {
-  console.log('WebSocket connection opened');
-};
+  ws.onopen = () => {
+    console.log('WebSocket connection opened');
+  };
 
-ws.onerror = (error) => {
-  console.log(`WebSocket error: ${error}`);
-};
+  ws.onerror = (error) => {
+    console.log(`WebSocket error: ${error}`);
+  };
 
-ws.onmessage = (message) => {
-  console.log(`Received: ${message.data}`);
-};
+  ws.onmessage = (message) => {
+    console.log(`Received: ${message.data}`);
+  };
+
+  ws.onclose = (event) => {
+    console.log(`WebSocket closed: ${event.code} - ${event.reason}`);
+    console.log(`Reconnecting in ${reconnectDelay} ms...`);
+    setTimeout(setupWebSocket, reconnectDelay);
+  };
+}
+
+// Initialize the WebSocket connection
+setupWebSocket();
 
 ////// Managing Led State ///////////////////
 
@@ -56,7 +70,7 @@ function updateLedState() {
 }
 
 function sendLedData() {
-  console.log("sending: ", ledState)
+  // console.log("sending: ", ledState)
 
   if (ws.readyState === WebSocket.OPEN) {
     let ledStateUint8 = new Uint8ClampedArray(ledState);
