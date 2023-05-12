@@ -104,9 +104,10 @@ void Screen_::setPixel(uint8_t x, uint8_t y, uint8_t value)
 
 void Screen_::render()
 {
+  const auto buf = this->getRotatedRenderBuffer();
   for (int idx = 0; idx < ROWS * COLS; idx++)
   {
-    digitalWrite(PIN_DATA, this->getRotatedRenderBuffer()[positions[idx]]);
+    digitalWrite(PIN_DATA, buf[positions[idx]]);
     digitalWrite(PIN_CLOCK, HIGH);
     digitalWrite(PIN_CLOCK, LOW);
   }
