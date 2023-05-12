@@ -172,7 +172,7 @@ const sendPeriod = 5000;
 function updateLedState() {
 
   for (let i = 0; i < ledData.length; i++) {
-    ledState[i] = Math.round(ledData[i] * 16);;
+    ledState[i] = Math.round(ledData[i] * 255);;
   }
 }
 
