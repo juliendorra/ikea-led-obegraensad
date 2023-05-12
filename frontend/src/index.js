@@ -1,6 +1,7 @@
 const count = 16;
 const size = 16;
-const spacing = 1;
+const spacing = 6;
+const ratio = 1.5;
 const width = count * (size + spacing) - spacing;
 
 import examples from './examples.json';
@@ -16,9 +17,11 @@ let callback = function () { };
 let startTime = null;
 let code = '';
 
-output.width = output.height = width * dpr;
-context.scale(dpr, dpr);
-output.style.width = output.style.height = `${width}px`;
+output.width = width * dpr;
+output.height = width * dpr * ratio;
+context.scale(dpr, dpr * 1.5);
+output.style.width = `${width}px`;
+output.style.height = `${width * ratio}px`;
 
 ////////// Connect to the IKEA OBEGRÄNSAD Hack/Mod ESP32 web socket /////////
 let wsUrl = `ws://${window.location.host}/ws`;
@@ -129,7 +132,7 @@ function render() {
       value = value < 0 ? 0 : value;
       value = value > 1 ? 1 : value;
 
-      const offset = size / 2;
+      const offset = 0
       let radius = (value * size) / 2;
 
       if (radius < 0) {
@@ -142,12 +145,12 @@ function render() {
 
       context.beginPath();
       context.fillStyle = '#FFF';
-      context.arc(
+      context.globalAlpha = value;
+      context.rect(
         x * (size + spacing) + offset,
         y * (size + spacing) + offset,
-        radius,
-        0,
-        2 * Math.PI
+        size,
+        size / ratio
       );
       context.fill();
 
