@@ -1,12 +1,17 @@
 #include "screen.h"
+#include <SPI.h>
 
 using namespace std;
 
-void Screen_::setRenderBuffer(const uint8_t *renderBuffer)
+void Screen_::setRenderBuffer(const uint8_t *renderBuffer, bool grays)
 {
-  for (int i = 0; i < ROWS * COLS; i++)
-  {
-    this->renderBuffer_[i] = renderBuffer[i];
+  if(grays) {
+    memcpy(renderBuffer_, renderBuffer, ROWS*COLS);
+  } else {
+    for (int i = 0; i < ROWS * COLS; i++)
+    {
+      this->renderBuffer_[i] = renderBuffer[i] * 255;
+    }
   }
 }
 
@@ -90,7 +95,7 @@ void Screen_::setPixelAtIndex(uint8_t index, uint8_t value)
 {
   if (index >= 0 && index < COLS * ROWS)
   {
-    this->renderBuffer_[index] = value;
+    this->renderBuffer_[index] = value * 255;
   }
 }
 
@@ -98,22 +103,54 @@ void Screen_::setPixel(uint8_t x, uint8_t y, uint8_t value)
 {
   if (x >= 0 && y >= 0 && x < 16 && y < 16)
   {
-    this->renderBuffer_[y * 16 + x] = value;
+    this->renderBuffer_[y * 16 + x] = value * 255;
   }
 }
 
+void IRAM_ATTR Screen_::onScreenTimer(){
+  Screen._render();
+}
+
+void Screen_::setup()
+{
+  // TODO find proper unused pins for MISO and SS
+  SPI.begin(PIN_CLOCK, 34, PIN_DATA, 25); //SCLK, MISO, MOSI, SS
+  SPI.beginTransaction(SPISettings(10000000, MSBFIRST, SPI_MODE0));
+
+  hw_timer_t *Screen_timer = timerBegin(0, 80, true);
+  timerAttachInterrupt(Screen_timer, &onScreenTimer, true);
+  timerAlarmWrite(Screen_timer, 1000, true);
+  timerAlarmEnable(Screen_timer);
+}
+
+#define GRAY_LEVELS 16 // must be a power of two
+
 void Screen_::render()
 {
-  const auto buf = this->getRotatedRenderBuffer();
-  for (int idx = 0; idx < ROWS * COLS; idx++)
-  {
-    digitalWrite(PIN_DATA, buf[positions[idx]]);
-    digitalWrite(PIN_CLOCK, HIGH);
-    digitalWrite(PIN_CLOCK, LOW);
+  // no-op now, see _render() which is called automatically in a timer routine
+}
+
+void Screen_::_render()
+{
+  // TODO restore rotation ability (but efficiently)
+  const auto buf = this->renderBuffer_;
+
+  static byte bits[ROWS*COLS/8] = { 0 };
+  memset(bits, 0, ROWS*COLS/8);
+
+  static byte counter = 0;
+
+  for (int idx = 0; idx < ROWS*COLS; idx++) {
+    bits[idx >> 3] |= (buf[positions[idx]] > counter ? 0x80 : 0) >> (idx & 7);
   }
 
-  digitalWrite(PIN_LATCH, HIGH);
+  counter += (256/GRAY_LEVELS);
+
   digitalWrite(PIN_LATCH, LOW);
+
+  SPI.writeBytes(bits, sizeof(bits));
+
+  digitalWrite(PIN_LATCH, HIGH);
 }
 
 void Screen_::cacheCurrent()

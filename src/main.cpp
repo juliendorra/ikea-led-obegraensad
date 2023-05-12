@@ -52,6 +52,8 @@ void setup()
   initWebServer();
 #endif
 
+  Screen.setup();
+
   Screen.clear();
   loadMode();
   Screen.loadFromStorage();
