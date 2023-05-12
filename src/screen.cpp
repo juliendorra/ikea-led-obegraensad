@@ -1,6 +1,9 @@
 #include "screen.h"
 #include <SPI.h>
 
+#define GRAY_LEVELS 64 // must be a power of two
+#define TIMER_INTERVAL_US 30
+
 using namespace std;
 
 void Screen_::setRenderBuffer(const uint8_t *renderBuffer, bool grays)
@@ -119,11 +122,9 @@ void Screen_::setup()
 
   hw_timer_t *Screen_timer = timerBegin(0, 80, true);
   timerAttachInterrupt(Screen_timer, &onScreenTimer, true);
-  timerAlarmWrite(Screen_timer, 1000, true);
+  timerAlarmWrite(Screen_timer, TIMER_INTERVAL_US, true);
   timerAlarmEnable(Screen_timer);
 }
-
-#define GRAY_LEVELS 16 // must be a power of two
 
 void Screen_::render()
 {
