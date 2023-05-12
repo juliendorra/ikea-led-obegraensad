@@ -160,6 +160,8 @@ function render() {
     }
   }
 
+  updateLedState();
+
   window.requestAnimationFrame(render);
 }
 
@@ -169,8 +171,7 @@ render();
 
 let ledState = new Array(256).fill(0); // Array to store the actual on/off state of each LED (0 or 1)
 
-const updateLedStatePeriod = 50;
-const sendPeriod = 5000;
+const sendPeriod = 5;
 
 function updateLedState() {
 
@@ -190,7 +191,6 @@ function sendLedData() {
 
 }
 
-setInterval(updateLedState, updateLedStatePeriod);
 setInterval(sendLedData, sendPeriod);
 
 ////////////////////////////////////////////////////////////////////////////
