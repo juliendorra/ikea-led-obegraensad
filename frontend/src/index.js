@@ -40,7 +40,35 @@ ws.onmessage = (message) => {
   console.log(`Received: ${message.data}`);
 };
 
+////// Managing Led State ///////////////////
+
 let ledData = Array(256).fill(0); // Initialize array of intensity values (0-1)
+
+let ledState = new Array(256).fill(0); // Array to store the actual on/off state of each LED (0 or 1)
+
+const sendPeriod = 5;
+
+function updateLedState() {
+
+  for (let i = 0; i < ledData.length; i++) {
+    ledState[i] = Math.round(ledData[i] * 255);;
+  }
+}
+
+function sendLedData() {
+  console.log("sending: ", ledState)
+
+  if (ws.readyState === WebSocket.OPEN) {
+    let ledStateUint8 = new Uint8ClampedArray(ledState);
+    ws.send(ledStateUint8.buffer);
+  }
+
+
+}
+
+setInterval(sendLedData, sendPeriod);
+
+////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////
 
@@ -167,33 +195,6 @@ function render() {
 
 render();
 
-////// Managing Led State ///////////////////
-
-let ledState = new Array(256).fill(0); // Array to store the actual on/off state of each LED (0 or 1)
-
-const sendPeriod = 5;
-
-function updateLedState() {
-
-  for (let i = 0; i < ledData.length; i++) {
-    ledState[i] = Math.round(ledData[i] * 255);;
-  }
-}
-
-function sendLedData() {
-  console.log("sending: ", ledState)
-
-  if (ws.readyState === WebSocket.OPEN) {
-    let ledStateUint8 = new Uint8ClampedArray(ledState);
-    ws.send(ledStateUint8.buffer);
-  }
-
-
-}
-
-setInterval(sendLedData, sendPeriod);
-
-////////////////////////////////////////////////////////////////////////////
 
 function updateComments(comments) {
   const lines = comment.querySelectorAll('label');
