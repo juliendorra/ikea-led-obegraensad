@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <WiFi.h>
+#include <WiFiMulti.h>
 
 #include "constants.h"
 #include "mode/mode.h"
@@ -9,6 +10,10 @@
 #include "webserver.h"
 #include "screen.h"
 #include "mode/mode.h"
+
+#ifdef ENABLE_SERVER
+WiFiMulti wifiMulti;
+#endif
 
 void setup()
 {
@@ -23,16 +28,20 @@ void setup()
 // server
 #ifdef ENABLE_SERVER
   // wifi
-  int attempts = 0;
+  wifiMulti.addAP(WIFI_SSID_1, WIFI_PASSWORD_1);
+  wifiMulti.addAP(WIFI_SSID_2, WIFI_PASSWORD_2);
+  wifiMulti.addAP(WIFI_SSID_3, WIFI_PASSWORD_3);
+
   WiFi.setHostname(WIFI_HOSTNAME);
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  while (WiFi.status() != WL_CONNECTED && attempts < 7)
+
+  int attempts = 0;
+  while (wifiMulti.run() != WL_CONNECTED && attempts < 7)
   {
     delay(2000);
     Serial.print(".");
     attempts++;
   }
-  if (WiFi.status() != WL_CONNECTED)
+  if (wifiMulti.run() != WL_CONNECTED)
   {
     Serial.println("Couldn't connect to WiFi, resetting");
     ESP.restart();
