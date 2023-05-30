@@ -1,3 +1,5 @@
+# Check the tixy-grey branch for a fork that turns your OBEGRÄNSAD LED Wall Lamp into a tixy.land playground
+
 # IKEA OBEGRÄNSAD Hack/Mod
 
 Turn your OBEGRÄNSAD LED Wall Lamp into a live drawing canvas
